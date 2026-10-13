@@ -9,6 +9,7 @@ import { JoinMeetingDialog } from '../components/JoinMeetingDialog'
 import { IntroSlider } from '../components/IntroSlider'
 import { MoreLink } from '../components/MoreLink'
 import { CreateMeetingMenu } from '../components/CreateMeetingMenu'
+import { QuickAccessRooms } from '../components/QuickAccessRooms'
 import { ReactNode, useEffect, useState } from 'react'
 
 import { css } from '@/styled-system/css'
@@ -216,7 +217,7 @@ const Home = () => {
             <MoreLink />
           </LeftColumn>
           <RightColumn>
-            <IntroSlider />
+            {isLoggedIn ? <QuickAccessRooms /> : <IntroSlider />}
           </RightColumn>
         </Columns>
       </Screen>
