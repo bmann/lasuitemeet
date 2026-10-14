@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTitle } from 'hoofd'
 import { css } from '@/styled-system/css'
@@ -12,6 +12,7 @@ import { keys } from '@/api/queryKeys'
 import { useUser } from '@/features/auth/api/useUser'
 import { LoginButton } from '@/components/LoginButton'
 import { fetchRooms } from '@/features/rooms/api/fetchRooms'
+import { usePatchRoom } from '@/features/rooms/api/patchRoom'
 import { RoomListRow } from '@/features/rooms/components/RoomListRow'
 import { getRoutePath } from '@/navigation/getRoutePath'
 import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react'
@@ -23,6 +24,20 @@ const listClass = css({
   padding: 0,
   margin: 0,
   listStyle: 'none',
+})
+
+const tableHeaderClass = css({
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr auto auto',
+  gap: '1rem',
+  padding: '0.25rem 0',
+  borderBottom: '1px solid',
+  borderColor: 'greyscale.500',
+  color: 'greyscale.700',
+  fontSize: '0.75rem',
+  fontWeight: 500,
+  textTransform: 'uppercase',
+  letterSpacing: '0.02em',
 })
 
 const paginationClass = css({
@@ -37,7 +52,9 @@ export const Meetings = () => {
   const { t: tPagination } = useTranslation('rooms', {
     keyPrefix: 'pagination',
   })
+  const queryClient = useQueryClient()
   const { isLoggedIn, isLoading: isAuthLoading } = useUser()
+  const { mutateAsync: patchRoom } = usePatchRoom()
   const [page, setPage] = useState(1)
 
   const { data, isLoading } = useQuery({
@@ -72,6 +89,17 @@ export const Meetings = () => {
   const totalPageCount = data?.count ? Math.ceil(data.count / PAGE_SIZE) : 1
   const hasMultiplePages = totalPageCount > 1
 
+  const handleRename = async (roomId: string, name: string) => {
+    try {
+      await patchRoom({ roomId, room: { name } })
+      await queryClient.invalidateQueries({
+        queryKey: [keys.rooms, { role: 'owner' }],
+      })
+    } catch {
+      // PATCH errors surface via the mutation; keep the current page data.
+    }
+  }
+
   return (
     <Screen layout="centered" footer={false}>
       <CenteredContent title={t('heading')} withBackButton>
@@ -83,11 +111,24 @@ export const Meetings = () => {
           ) : rooms.length === 0 ? (
             <Text variant="note">{t('empty')}</Text>
           ) : (
-            <ul className={listClass}>
-              {rooms.map((room) => (
-                <RoomListRow key={room.id} room={room} locale={i18n.language} />
-              ))}
-            </ul>
+            <div className={css({ width: '100%' })}>
+              <div className={tableHeaderClass}>
+                <Text variant="smNote">{t('column.name')}</Text>
+                <Text variant="smNote">{t('column.code')}</Text>
+                <Text variant="smNote">{t('column.created')}</Text>
+                <Text variant="smNote">{t('column.access')}</Text>
+              </div>
+              <ul className={listClass}>
+                {rooms.map((room) => (
+                  <RoomListRow
+                    key={room.id}
+                    room={room}
+                    locale={i18n.language}
+                    onRename={(name) => handleRename(room.id, name)}
+                  />
+                ))}
+              </ul>
+            </div>
           )}
           {hasMultiplePages && (
             <div className={paginationClass}>

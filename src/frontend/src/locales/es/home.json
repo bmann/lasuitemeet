@@ -75,6 +75,12 @@
     "heading": "Tus reuniones",
     "loginTitle": "Inicia sesión para ver tus reuniones",
     "empty": "Aún no has creado ninguna reunión.",
-    "backButton": "Volver al inicio"
+    "backButton": "Volver al inicio",
+    "column": {
+      "name": "Nombre",
+      "code": "Código",
+      "created": "Creado",
+      "access": "Acceso"
+    }
   }
 }

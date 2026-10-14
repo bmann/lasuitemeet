@@ -7,7 +7,7 @@ import { keys } from '@/api/queryKeys'
 
 export type PatchRoomParams = {
   roomId: string
-  room: Partial<Pick<ApiRoom, 'configuration' | 'access_level'>>
+  room: Partial<Pick<ApiRoom, 'name' | 'configuration' | 'access_level'>>
 }
 
 export const patchRoom = ({ roomId, room }: PatchRoomParams) => {

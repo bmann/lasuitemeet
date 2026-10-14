@@ -75,6 +75,12 @@
     "heading": "Your meetings",
     "loginTitle": "Sign in to view your meetings",
     "empty": "You haven't created any meetings yet.",
-    "backButton": "Back to home"
+    "backButton": "Back to home",
+    "column": {
+      "name": "Name",
+      "code": "Code",
+      "created": "Created",
+      "access": "Access"
+    }
   }
 }

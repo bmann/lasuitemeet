@@ -75,6 +75,12 @@
     "heading": "Deine Meetings",
     "loginTitle": "Melde dich an, um deine Meetings zu sehen",
     "empty": "Du hast noch keine Meetings erstellt.",
-    "backButton": "Zurück zur Startseite"
+    "backButton": "Zurück zur Startseite",
+    "column": {
+      "name": "Name",
+      "code": "Code",
+      "created": "Erstellt",
+      "access": "Zugriff"
+    }
   }
 }

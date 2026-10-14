@@ -9,7 +9,7 @@ import pytest
 from rest_framework.test import APIClient
 
 from ...factories import RoomFactory, UserFactory
-from ...models import RoomAccessLevel
+from ...models import RoleChoices, RoomAccessLevel
 from ...services.room_management import (
     RoomManagement,
     RoomManagementException,
@@ -94,6 +94,7 @@ def test_api_rooms_update_administrators(mock_update_metadata):
         users=[(user, random.choice(["administrator", "owner"]))],
         configuration={"can_publish_sources": ["camera"]},
     )
+    original_slug = room.slug
     client = APIClient()
     client.force_login(user)
 
@@ -110,7 +111,9 @@ def test_api_rooms_update_administrators(mock_update_metadata):
     assert response.status_code == 200
     room.refresh_from_db()
     assert room.name == "New name"
-    assert room.slug == "new-name"
+    # Slug is the join code — preserved across renames; the PUT-supplied slug is
+    # read-only and ignored (Issue #2 / Option 1).
+    assert room.slug == original_slug
     assert room.access_level == RoomAccessLevel.PUBLIC
     assert room.configuration == {"can_publish_sources": ["camera", "microphone"]}
 
@@ -132,6 +135,7 @@ def test_api_rooms_update_administrators_configuration_only(mock_update_metadata
         users=[(user, random.choice(["administrator", "owner"]))],
         configuration={},
     )
+    original_slug = room.slug
     client = APIClient()
     client.force_login(user)
 
@@ -147,7 +151,8 @@ def test_api_rooms_update_administrators_configuration_only(mock_update_metadata
     assert response.status_code == 200
     room.refresh_from_db()
     assert room.name == "New name"
-    assert room.slug == "new-name"
+    # Slug (join code) preserved across renames; PUT-supplied slug is read-only.
+    assert room.slug == original_slug
     assert room.access_level == RoomAccessLevel.RESTRICTED
     assert room.configuration == {"can_publish_sources": ["camera", "microphone"]}
 
@@ -169,6 +174,7 @@ def test_api_rooms_update_administrators_access_level_only(mock_update_metadata)
         users=[(user, random.choice(["administrator", "owner"]))],
         configuration={"can_publish_sources": ["camera"]},
     )
+    original_slug = room.slug
     client = APIClient()
     client.force_login(user)
 
@@ -183,7 +189,8 @@ def test_api_rooms_update_administrators_access_level_only(mock_update_metadata)
     assert response.status_code == 200
     room.refresh_from_db()
     assert room.name == "New name"
-    assert room.slug == "new-name"
+    # Slug (join code) preserved across renames; only the display name changes.
+    assert room.slug == original_slug
     assert room.access_level == RoomAccessLevel.PUBLIC
     assert room.configuration == {"can_publish_sources": ["camera"]}
 
@@ -216,12 +223,40 @@ def test_api_rooms_update_administrators_name_only(mock_update_metadata):
     )
     assert response.status_code == 200
     room.refresh_from_db()
+    # Renaming updates the display name, but the slug (the room's stable join
+    # code) is preserved — see Issue #2 / Option 1 (name existing meetings).
     assert room.name == "New name"
-    assert room.slug == "new-name"
+    assert room.slug == "old-name"
     # Unrelated fields untouched
     assert room.access_level == RoomAccessLevel.PUBLIC
     assert room.configuration == {"can_publish_sources": ["camera"]}
 
+    mock_update_metadata.assert_not_called()
+
+
+@patch.object(RoomManagement, "update_metadata")
+def test_api_rooms_update_rename_keeps_slug(mock_update_metadata):
+    """
+    Renaming a room updates only the display name: the slug (the meeting's
+    stable join code) must not change, so existing links keep working.
+    """
+    user = UserFactory()
+    room = RoomFactory(
+        name="my room",
+        users=[(user, RoleChoices.OWNER)],
+    )
+    client = APIClient()
+    client.force_login(user)
+
+    response = client.patch(
+        f"/api/v1.0/rooms/{room.id!s}/",
+        {"name": "Q3 Planning sync"},
+        format="json",
+    )
+    assert response.status_code == 200
+    room.refresh_from_db()
+    assert room.name == "Q3 Planning sync"
+    assert room.slug == "my-room"  # join code unchanged
     mock_update_metadata.assert_not_called()
 
 

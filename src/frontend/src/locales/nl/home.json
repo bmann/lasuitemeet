@@ -75,6 +75,12 @@
     "heading": "Jouw vergaderingen",
     "loginTitle": "Log in om je vergaderingen te bekijken",
     "empty": "Je hebt nog geen vergaderingen gemaakt.",
-    "backButton": "Terug naar home"
+    "backButton": "Terug naar home",
+    "column": {
+      "name": "Naam",
+      "code": "Code",
+      "created": "Gemaakt",
+      "access": "Toegang"
+    }
   }
 }

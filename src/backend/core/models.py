@@ -456,12 +456,19 @@ class Room(Resource):
 
     def clean_fields(self, exclude=None):
         """
-        Automatically generate the slug from the name and make sure it does not look like a UUID.
+        Derive the slug from the name only on creation, and make sure it does
+        not look like a UUID.
 
-        We don't want any overlapping between the `slug` and the `id` fields because they can
-        both be used to get a room detail view on the API.
+        On update the slug is preserved: it is the room's stable join code, so
+        renaming a room (display name) must not change its meeting link. The
+        `name` field is a human-readable label; the `slug` stays the shareable
+        identifier.
+
+        We don't want any overlapping between the `slug` and the `id` fields
+        because they can both be used to get a room detail view on the API.
         """
-        self.slug = slugify(self.name)
+        if self.pk is None:
+            self.slug = slugify(self.name)
         try:
             uuid.UUID(self.slug)
         except ValueError:
