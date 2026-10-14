@@ -68,5 +68,13 @@
       "trusted": "Vertrouwd",
       "restricted": "Beperkt"
     }
+  },
+  "reviewAllMeetings": "Alle vergaderingen bekijken",
+  "meetings": {
+    "pageTitle": "Jouw vergaderingen",
+    "heading": "Jouw vergaderingen",
+    "loginTitle": "Log in om je vergaderingen te bekijken",
+    "empty": "Je hebt nog geen vergaderingen gemaakt.",
+    "backButton": "Terug naar home"
   }
 }

@@ -68,5 +68,13 @@
       "trusted": "Vertraulich",
       "restricted": "Eingeschränkt"
     }
+  },
+  "reviewAllMeetings": "Alle Meetings anzeigen",
+  "meetings": {
+    "pageTitle": "Deine Meetings",
+    "heading": "Deine Meetings",
+    "loginTitle": "Melde dich an, um deine Meetings zu sehen",
+    "empty": "Du hast noch keine Meetings erstellt.",
+    "backButton": "Zurück zur Startseite"
   }
 }

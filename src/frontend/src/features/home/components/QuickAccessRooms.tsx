@@ -1,30 +1,14 @@
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { css } from '@/styled-system/css'
-import { Link, Text, H } from '@/primitives'
+import { Text, H } from '@/primitives'
 import { Spinner } from '@/primitives/Spinner'
 import { keys } from '@/api/queryKeys'
 import { useUser } from '@/features/auth/api/useUser'
-import { ApiAccessLevel } from '@/features/rooms/api/ApiRoom'
 import { fetchRooms } from '@/features/rooms/api/fetchRooms'
-import { formatDate, formatRelativeDate } from '@/utils/formatDate'
-import { getRoutePath } from '@/navigation/getRoutePath'
+import { RoomListRow } from '@/features/rooms/components/RoomListRow'
 
 const MAX_ROOMS = 5
-
-const AccessLevelLabel = ({ accessLevel }: { accessLevel: ApiAccessLevel }) => {
-  const { t } = useTranslation('home', {
-    keyPrefix: 'quickAccessRooms.access',
-  })
-  const labelKey =
-    accessLevel === ApiAccessLevel.TRUSTED
-      ? 'trusted'
-      : accessLevel === ApiAccessLevel.RESTRICTED
-        ? 'restricted'
-        : 'open'
-
-  return <Text variant="note">{t(labelKey)}</Text>
-}
 
 export const QuickAccessRooms = () => {
   const { t, i18n } = useTranslation('home', { keyPrefix: 'quickAccessRooms' })
@@ -68,37 +52,7 @@ export const QuickAccessRooms = () => {
       ) : (
         <ul>
           {rooms.slice(0, MAX_ROOMS).map((room) => (
-            <li
-              key={room.id}
-              className={css({
-                display: 'grid',
-                gridTemplateColumns: '1fr auto auto',
-                gap: '1rem',
-                alignItems: 'center',
-                padding: '0.5rem 0',
-                borderBottom: '1px solid',
-                borderColor: 'greyscale.500',
-                '&:last-child': { borderBottom: 0 },
-              })}
-            >
-              <Link
-                to={String(getRoutePath('room', room.slug))}
-                data-attr="link-to-room"
-              >
-                {room.slug}
-              </Link>
-              <Text
-                variant="smNote"
-                title={
-                  room.created_at ? formatDate(room.created_at) : undefined
-                }
-              >
-                {room.created_at
-                  ? formatRelativeDate(room.created_at, i18n.language)
-                  : ''}
-              </Text>
-              <AccessLevelLabel accessLevel={room.access_level} />
-            </li>
+            <RoomListRow key={room.id} room={room} locale={i18n.language} />
           ))}
         </ul>
       )}

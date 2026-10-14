@@ -68,5 +68,13 @@
       "trusted": "Trusted",
       "restricted": "Restricted"
     }
+  },
+  "reviewAllMeetings": "Review all meetings",
+  "meetings": {
+    "pageTitle": "Your meetings",
+    "heading": "Your meetings",
+    "loginTitle": "Sign in to view your meetings",
+    "empty": "You haven't created any meetings yet.",
+    "backButton": "Back to home"
   }
 }

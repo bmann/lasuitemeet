@@ -68,5 +68,13 @@
       "trusted": "De confiance",
       "restricted": "Restreint"
     }
+  },
+  "reviewAllMeetings": "Voir toutes les réunions",
+  "meetings": {
+    "pageTitle": "Vos réunions",
+    "heading": "Vos réunions",
+    "loginTitle": "Connectez-vous pour voir vos réunions",
+    "empty": "Vous n'avez pas encore créé de réunion.",
+    "backButton": "Retour à l'accueil"
   }
 }

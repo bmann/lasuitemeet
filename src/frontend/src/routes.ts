@@ -20,6 +20,7 @@ const AccessibilityRoute = lazy(
   () => import('@/features/legalsTerms/Accessibility')
 )
 const RoomRoute = lazy(() => import('@/features/rooms/routes/Room'))
+const MeetingsRoute = lazy(() => import('@/features/rooms/routes/Meetings'))
 const FeedbackRoute = lazy(() => import('@/features/rooms/routes/Feedback'))
 const ConnectionTestRoute = lazy(
   () => import('@/features/diagnostics/routes/ConnectionTest')
@@ -30,6 +31,7 @@ const roomIdRegex = new RegExp(`^[/](?<roomId>${flexibleRoomIdPattern})$`)
 export const routes: Record<
   | 'home'
   | 'room'
+  | 'meetings'
   | 'feedback'
   | 'connectionTest'
   | 'legalTerms'
@@ -57,6 +59,11 @@ export const routes: Record<
     to: (roomId: string) => `/${roomId.trim()}`,
     path: roomIdRegex,
     Component: RoomRoute,
+  },
+  meetings: {
+    name: 'meetings',
+    path: '/meetings',
+    Component: MeetingsRoute,
   },
   feedback: {
     name: 'feedback',

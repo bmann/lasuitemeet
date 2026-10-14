@@ -10,6 +10,8 @@ import { IntroSlider } from '../components/IntroSlider'
 import { MoreLink } from '../components/MoreLink'
 import { CreateMeetingMenu } from '../components/CreateMeetingMenu'
 import { QuickAccessRooms } from '../components/QuickAccessRooms'
+import { LinkButton } from '@/primitives'
+import { getRoutePath } from '@/navigation/getRoutePath'
 import { ReactNode, useEffect, useState } from 'react'
 
 import { css } from '@/styled-system/css'
@@ -217,7 +219,19 @@ const Home = () => {
             <MoreLink />
           </LeftColumn>
           <RightColumn>
-            {isLoggedIn ? <QuickAccessRooms /> : <IntroSlider />}
+            {isLoggedIn ? (
+              <>
+                <QuickAccessRooms />
+                <LinkButton
+                  href={String(getRoutePath('meetings'))}
+                  variant="secondary"
+                >
+                  {t('reviewAllMeetings')}
+                </LinkButton>
+              </>
+            ) : (
+              <IntroSlider />
+            )}
           </RightColumn>
         </Columns>
       </Screen>
