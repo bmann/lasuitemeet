@@ -52,7 +52,12 @@ export const QuickAccessRooms = () => {
       ) : (
         <ul>
           {rooms.slice(0, MAX_ROOMS).map((room) => (
-            <RoomListRow key={room.id} room={room} locale={i18n.language} />
+            <RoomListRow
+              key={room.id}
+              room={room}
+              locale={i18n.language}
+              showName
+            />
           ))}
         </ul>
       )}

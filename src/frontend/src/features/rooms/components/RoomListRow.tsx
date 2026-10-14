@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useState } from 'react'
-import { css } from '@/styled-system/css'
+import { css, cx } from '@/styled-system/css'
 import { Input, Link, Text } from '@/primitives'
 import { ApiAccessLevel, type ApiRoom } from '@/features/rooms/api/ApiRoom'
 import { formatDate, formatRelativeDate } from '@/utils/formatDate'
@@ -23,17 +23,22 @@ const AccessLevelLabel = ({ accessLevel }: { accessLevel: ApiAccessLevel }) => {
 export const RoomListRow = ({
   room,
   locale,
+  showName = false,
   onRename,
 }: {
   room: ApiRoom
   locale: string
+  showName?: boolean
   onRename?: (name: string) => void
 }) => {
   const [isEditingName, setIsEditingName] = useState(false)
   const [nameDraft, setNameDraft] = useState(room.name)
 
   const editable = Boolean(onRename)
-  const gridTemplateColumns = editable ? '1fr 1fr auto auto' : '1fr auto auto'
+  const hasNameColumn = editable || showName
+  const gridTemplateColumns = hasNameColumn
+    ? '1fr 1fr auto auto'
+    : '1fr auto auto'
 
   const commitRename = () => {
     setIsEditingName(false)
@@ -61,9 +66,16 @@ export const RoomListRow = ({
     '&:last-child': { borderBottom: 0 },
   })
 
+  const nameCellClass = css({
+    minWidth: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  })
+
   return (
     <li className={rowClass}>
-      {editable && (
+      {hasNameColumn && (
         <div className={css({ minWidth: 0 })}>
           {isEditingName ? (
             <Input
@@ -79,29 +91,29 @@ export const RoomListRow = ({
                 if (event.key === 'Escape') cancelRename()
               }}
             />
-          ) : (
+          ) : editable ? (
             <button
               type="button"
-              className={css({
-                width: 'full',
-                padding: '0.25rem 0.5rem',
-                border: '1px solid transparent',
-                borderRadius: 4,
-                textAlign: 'left',
-                cursor: 'pointer',
-                color: 'control.text',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                _hover: {
-                  borderColor: 'control.border',
-                },
-                _focusVisible: {
-                  outline: '2px solid',
-                  outlineColor: 'focusRing',
-                  outlineOffset: '2px',
-                },
-              })}
+              className={cx(
+                nameCellClass,
+                css({
+                  width: 'full',
+                  padding: '0.25rem 0.5rem',
+                  border: '1px solid transparent',
+                  borderRadius: 4,
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  color: 'control.text',
+                  _hover: {
+                    borderColor: 'control.border',
+                  },
+                  _focusVisible: {
+                    outline: '2px solid',
+                    outlineColor: 'focusRing',
+                    outlineOffset: '2px',
+                  },
+                })
+              )}
               data-attr="rename-room"
               onClick={() => {
                 setNameDraft(room.name)
@@ -110,6 +122,10 @@ export const RoomListRow = ({
             >
               {room.name}
             </button>
+          ) : (
+            <span className={nameCellClass} data-attr="room-name">
+              {room.name}
+            </span>
           )}
         </div>
       )}
