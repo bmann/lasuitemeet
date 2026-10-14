@@ -67,6 +67,7 @@ export const RoomListRow = ({
   })
 
   const nameCellClass = css({
+    display: 'block',
     minWidth: 0,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
