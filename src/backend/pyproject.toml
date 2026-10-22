@@ -28,6 +28,7 @@ dependencies = [
     "Brotli==1.2.0",
     "brevo-python==1.2.0",
     "celery[redis]==5.6.3",
+    "certifi>=2026.10.19", # GHSA-6q48-6c7w-9gw2 (eMudhra emSign root, CVE-2026-111943)
     "dj-database-url==3.1.2",
     "django-configurations==2.5.1",
     "django-cors-headers==4.9.0",

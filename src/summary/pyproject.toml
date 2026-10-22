@@ -15,7 +15,8 @@ dependencies = [
     "posthog==7.29.0",
     "requests==2.34.2",
     "sentry-sdk[fastapi, celery]==2.66.1",
-    "langfuse==4.14.1"
+    "langfuse==4.14.1",
+    "certifi>=2026.10.19", # GHSA-6q48-6c7w-9gw2 (eMudhra emSign root, CVE-2026-111943)
 ]
 
 [project.optional-dependencies]
